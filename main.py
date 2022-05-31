@@ -1,4 +1,21 @@
+def code(key, string):
+    block = ''
+    code = ''
+    block_size = len(key)
+    l = len(string)
+    for i in range(0, l, block_size):
+        block = [string[i + j]for j in range(block_size)]
+        for j in range(block_size):
+            code += block[key.index(j)]
+        return code
+
+
 def symbol(key, string):
+    block_size = len(key)
+    l = len(string)
+    if l % block_size != 0:
+        for i in range(block_size - (n % block_size)):
+            string += str("*")
 
 
 def desymbol(key, string):
