@@ -167,7 +167,3 @@ def awake():
     if choice == 2:
         decrypt()
 
-
-start = False
-while not start:
-    awake()
