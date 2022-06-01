@@ -20,89 +20,89 @@ def is_legit(key):
 
 
 def code(key, string):
-    block_size = len(key)
+    group_len = len(key)
     l = len(string)
     block = ''
     code = ''
-    for i in range(0, l, block_size):
-        block = [string[i + j] for j in range(block_size)]
-        for j in range(block_size):
+    for i in range(0, l, group_len):
+        block = [string[i + j] for j in range(group_len)]
+        for j in range(group_len):
             code += block[key[j]]
     return code
 
 
 def decode(key, string):
-    block_size = len(key)
+    group_len = len(key)
     l = len(string)
     block = ''
     code = ''
-    for i in range(0, l, block_size):
-        block = [string[i + j] for j in range(block_size)]
-        for j in range(block_size):
+    for i in range(0, l, group_len):
+        block = [string[i + j] for j in range(group_len)]
+        for j in range(group_len):
             code += block[key[j]]
     code = code.replace("*", "")
     return code
 
 
 def symbol(key, string):
-    block_size = len(key)
+    group_len = len(key)
     l = len(string)
-    if l % block_size != 0:
-        for i in range(block_size - (l % block_size)):
+    if l % group_len != 0:
+        for i in range(group_len - (l % group_len)):
             string += str("*")
     print(code(key, string))
 
 
-def desymbol(key, string):
+def decrypted_symbol(key, string):
     for i in range(len(key) // 2):
         print(decode(key, string))
 
 
 def group(key, string):
-    block_size = len(key)
-    amount = int(input("По сколько символов группировать? "))
-    te_xt = [string[i:i + amount] for i in range(0, len(string), amount)]
-    if len(te_xt[-1]) != amount:
-        for i in range(amount - (len(te_xt[-1]) % amount)):
-            te_xt[-1] += str("*")
-    if len(te_xt) != block_size:
-        for i in range(block_size - (len(te_xt) % block_size)):
-            te_xt.append("*" * amount)
-    print(code(key, te_xt))
+    group_len = len(key)
+    amount = int(input("По сколько сколько вы хотите группировать?"))
+    fixed_text = [string[i:i + amount] for i in range(0, len(string), amount)]
+    if len(fixed_text[-1]) != amount:
+        for i in range(amount - (len(fixed_text[-1]) % amount)):
+            fixed_text[-1] += str("*")
+    if len(fixed_text) != group_len:
+        for i in range(group_len - (len(fixed_text) % group_len)):
+            fixed_text.append("*" * amount)
+    print(code(key, fixed_text))
 
 
-def degroup(key, string):
+def decrypted_group(key, string):
     amount = int(input("По сколько символов было сгруппировано? "))
-    te_xt = [string[i:i + amount] for i in range(0, len(string), amount)]
-    print(decode(key, te_xt))
+    fixed_text = [string[i:i + amount] for i in range(0, len(string), amount)]
+    print(decode(key, fixed_text))
 
 
 def word(key, string):
-    block_size = len(key)
-    te_xt = string.split(" ")
-    if len(te_xt) != block_size:
-        for i in range(block_size - (len(te_xt) % block_size)):
-            te_xt.append("*" * 5)
-    l = len(te_xt)
+    group_len = len(key)
+    fixed_text = string.split(" ")
+    if len(fixed_text) != group_len:
+        for i in range(group_len - (len(fixed_text) % group_len)):
+            fixed_text.append("*" * 5)
+    l = len(fixed_text)
     block = ''
     code = ''
-    for i in range(0, l, block_size):
-        block = [te_xt[i + j] for j in range(block_size)]
-        for j in range(block_size):
+    for i in range(0, l, group_len):
+        block = [fixed_text[i + j] for j in range(group_len)]
+        for j in range(group_len):
             code += block[key.index(j)]
             code += " "
     print(code)
 
 
-def deword(key, string):
-    te_xt = string.split()
-    block_size = len(key)
-    l = len(te_xt)
+def decrypted_word(key, string):
+    fixed_text = string.split()
+    group_len = len(key)
+    l = len(fixed_text)
     block = ''
     code = ''
-    for i in range(0, l, block_size):
-        block = [te_xt[i + j] for j in range(block_size)]
-        for j in range(block_size):
+    for i in range(0, l, group_len):
+        block = [fixed_text[i + j] for j in range(group_len)]
+        for j in range(group_len):
             code += block[key[j]]
             code += " "
     code = code.replace("*", "")
@@ -151,11 +151,11 @@ def decrypt():
                     "'3' - слово \n"
                     "->"))
     if way == 1:
-        desymbol(key, string)
+        decrypted_symbol(key, string)
     if way == 2:
-        degroup(key, string)
+        decrypted_group(key, string)
     if way == 3:
-        deword(key, string)
+        decrypted_word(key, string)
 
 
 def awake():
@@ -166,4 +166,10 @@ def awake():
         encrypt()
     if choice == 2:
         decrypt()
+
+
+start = True
+while start:
+    awake()
+    start = False
 
