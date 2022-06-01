@@ -1,4 +1,22 @@
-from numba import njit
+def is_legit(key):
+    check_key = key
+    for run in range(len(check_key)):
+        for i in range(len(check_key) - 1 - run):
+            if check_key[i] < check_key[i+1]:
+                check_key[i], check_key[i+1] = check_key[i+1], check_key[i]
+    max = check_key[0]
+    if len(check_key) == (max + 1):
+        for i in range(len(check_key)):
+            if check_key[i] == max:
+                max -= 1
+            else:
+                print("Неправильный код")
+                break
+    else:
+        print("Неправильный код")
+        breakpoint()
+    print("Ключ корректен")
+    return True
 
 
 def code(key, string):
@@ -9,7 +27,7 @@ def code(key, string):
     for i in range(0, l, block_size):
         block = [string[i + j] for j in range(block_size)]
         for j in range(block_size):
-            code += block[key.index(j)]
+            code += block[key[j]]
     return code
 
 
@@ -21,7 +39,7 @@ def decode(key, string):
     for i in range(0, l, block_size):
         block = [string[i + j] for j in range(block_size)]
         for j in range(block_size):
-            code += block[key.index(j)]
+            code += block[key[j]]
     code = code.replace("*", "")
     return code
 
@@ -37,8 +55,7 @@ def symbol(key, string):
 
 def desymbol(key, string):
     for i in range(len(key) // 2):
-        key[i], key[-i - 1] = key[-i - 1], key[i]
-    print(decode(key, string))
+        print(decode(key, string))
 
 
 def group(key, string):
@@ -57,8 +74,6 @@ def group(key, string):
 def degroup(key, string):
     amount = int(input("По сколько символов было сгруппировано? "))
     te_xt = [string[i:i + amount] for i in range(0, len(string), amount)]
-    for i in range(len(key) // 2):
-        key[i], key[-i - 1] = key[-i - 1], key[i]
     print(decode(key, te_xt))
 
 
@@ -81,8 +96,6 @@ def word(key, string):
 
 def deword(key, string):
     te_xt = string.split()
-    for i in range(len(key) // 2):
-        key[i], key[-i - 1] = key[-i - 1], key[i]
     block_size = len(key)
     l = len(te_xt)
     block = ''
@@ -90,7 +103,7 @@ def deword(key, string):
     for i in range(0, l, block_size):
         block = [te_xt[i + j] for j in range(block_size)]
         for j in range(block_size):
-            code += block[key.index(j)]
+            code += block[key[j]]
             code += " "
     code = code.replace("*", "")
     print(code)
@@ -101,15 +114,18 @@ def encrypt():
     string = input("Введите текст, который вы хотите зашифровать \n"
                    "->")
     e_key = input("Введите ключ шифрования\n"
+                  "(Формат - [1 3 0 2])\n"
                   "->")
+
+    fixed_key = e_key.split()
+    for f in fixed_key:
+        key.append(int(f))
+    is_legit(key)
     way = int(input("Выберите способ шифровки: \n"
                     "'1' - посимвольное \n"
                     "'2' - группа \n"
                     "'3' - слово \n"
                     "->"))
-    fixed_key = e_key.split()
-    for f in fixed_key:
-        key.append(int(f))
     if way == 1:
         symbol(key, string)
     if way == 2:
@@ -122,16 +138,18 @@ def decrypt():
     key = []
     string = input("Введите текст, который вы хотите расшифровать \n"
                    "->")
-    e_key = input("Введите ключ щифрования\n"
+    e_key = input("Введите ключ шифрования\n"
+                  "(Формат - [1 3 0 2])\n"
                   "->")
+    fixed_key = e_key.split()
+    for f in fixed_key:
+        key.append(int(f))
+    is_legit(key)
     way = int(input("Выберите способ шифровки: \n"
                     "'1' - посимвольное \n"
                     "'2' - группа \n"
                     "'3' - слово \n"
                     "->"))
-    fixed_key = e_key.split()
-    for f in fixed_key:
-        key.append(int(f))
     if way == 1:
         desymbol(key, string)
     if way == 2:
@@ -149,5 +167,7 @@ def awake():
     if choice == 2:
         decrypt()
 
-while (True):
+
+start = False
+while not start:
     awake()
